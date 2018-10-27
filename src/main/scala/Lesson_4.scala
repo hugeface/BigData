@@ -1,4 +1,5 @@
 import scala.util.matching.Regex
+import scala.io.Source
 
 object Lesson_4 {
   // 生成 case when 文本
@@ -26,11 +27,16 @@ object Lesson_4 {
   // 用正则表达式实现只取数字和字母（统一小写）
   def regex(str: String): Unit ={
     val pattern = new Regex("[a-zA-Z0-9]")
-    println((pattern findAllIn str).mkString(""))
+    print((pattern findAllIn str).mkString("").toLowerCase() + " ")
+  }
+  // 使用regex处理文本文件
+  def fileRegex(filePath : String): Unit = {
+    Source.fromFile(filePath).getLines().foreach(x => regex(x))
   }
   def main(args: Array[String]): Unit = {
 //    caseWhenText()
 //    lcs("1235", "12345")
-    regex("12324sdfsdf@#$%^&*(")
+//    regex("12324sdfsdASASQWf@#$%^&*(")
+    fileRegex("src/data/allfiles.txt")
   }
 }
