@@ -1,3 +1,5 @@
+import scala.util.matching.Regex
+
 object Lesson_4 {
   // 生成 case when 文本
   def caseWhenText() : Unit = {
@@ -21,8 +23,14 @@ object Lesson_4 {
     }
     print("Longest Common Sub-sequence: " + csArray(aLength)(bLength).toString)
   }
+  // 用正则表达式实现只取数字和字母（统一小写）
+  def regex(str: String): Unit ={
+    val pattern = new Regex("[a-zA-Z0-9]")
+    println((pattern findAllIn str).mkString(""))
+  }
   def main(args: Array[String]): Unit = {
 //    caseWhenText()
 //    lcs("1235", "12345")
+    regex("12324sdfsdf@#$%^&*(")
   }
 }
