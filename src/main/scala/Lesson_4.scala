@@ -5,6 +5,7 @@ object Lesson_4 {
   // 生成 case when 文本
   def caseWhenText() : Unit = {
     val a : Array[Int] = Array(1, 2, 3, 4, 5, 6)
+//    val a = (0 to 6)
     val b : String = a.map(x => "sum(case order_dow when '" + x.toString + "' then 1 else 0 end) as dow_" + x.toString).mkString(",\n")
     println(b)
   }
