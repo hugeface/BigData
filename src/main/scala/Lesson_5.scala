@@ -1,6 +1,5 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
-import spark.implicits._
 
 object Lesson_5 {
   /**
@@ -61,8 +60,21 @@ object Lesson_5 {
     val priors = spark.sql("select * from hive.order_products_prior")
     val prodSet = orders.join(priors, "order_id").select("user_id", "product_id")
     // implicits作为对象存在于sparkSession类中，只有sparkSession被实例化后，才会在实例对象中被创建，所以要通过实例来引用
+    /**
+      * 这里要多研究下
+      */
     import priors.sparkSession.implicits._
     val uniOrdRecs = prodSet.rdd.map(x=>(x(0).toString, x(1).toString)).groupByKey().mapValues(_.toSet.mkString(",")).toDF("user_id","product_records")
     prodSet.show()
+  }
+  // 用户总商品数量以及去重后的商品数量
+  def cntAndUni(): Unit = {
+    val spark = SparkSession.builder().appName("Orders And Order Categories").master("local[2]").getOrCreate()
+    val orders = spark.sql("select * from hive.orders")
+    val priors = spark.sql("select * from hive.order_products_prior")
+    val prodSet = orders.join(priors, "order_id").select("user_id", "product_id")
+    val cntAndUni = prodSet.rdd.map(x=>(x(0).toString, x(1).toString)).groupByKey().mapValues{record =>
+      val rs = record.toSet(record.size, record.mkString(","))
+    }.toDF()
   }
 }
