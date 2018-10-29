@@ -41,5 +41,9 @@ object Lesson_5 {
   // 每个用户产生订单的平均间隔
   def avgInterval(): Unit ={
     val spark = SparkSession.builder().appName("Calculate Average Order Interval Of User").master("local[2]").getOrCreate()
+    val orders = spark.sql("select * from hive.orders")
+    val pureOrders = orders.selectExpr("*", "if(days_since_prior_order='', 0, days_since_prior_order) as dspo").drop("days_since_prior_order")
+    val userGap = pureOrders.selectExpr("user_id", "case(dspo as int)").groupBy("user_id").avg("dspo").withColumnRenamed("avg(dspo)", "u_avg_day_gap").limit(10)
+    userGap.show()
   }
 }
