@@ -1,5 +1,6 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import spark.implicits._
 
 object Lesson_5 {
   /**
@@ -58,7 +59,10 @@ object Lesson_5 {
     val spark = SparkSession.builder().appName("Calculate Orders User Have Bought").master("local[2]").getOrCreate()
     val orders = spark.sql("select * from hive.orders")
     val priors = spark.sql("select * from hive.order_products_prior")
-    val prodSet = orders.join(priors, "order_id").select("user_id", "product_id").limit(10)
+    val prodSet = orders.join(priors, "order_id").select("user_id", "product_id")
+    // implicits作为对象存在于sparkSession类中，只有sparkSession被实例化后，才会在实例对象中被创建，所以要通过实例来引用
+    import priors.sparkSession.implicits._
+    val uniOrdRecs = prodSet.rdd.map(x=>(x(0).toString, x(1).toString)).groupByKey().mapValues(_.toSet.mkString(",")).toDF("user_id","product_records")
     prodSet.show()
   }
 }
