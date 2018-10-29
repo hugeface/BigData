@@ -46,4 +46,11 @@ object Lesson_5 {
     val userGap = pureOrders.selectExpr("user_id", "case(dspo as int)").groupBy("user_id").avg("dspo").withColumnRenamed("avg(dspo)", "u_avg_day_gap").limit(10)
     userGap.show()
   }
+  // 每个用户的总订单数
+  def orderCnt(): Unit = {
+    val spark = SparkSession.builder().appName("Calculate Order Count Of User").master("local[2]").getOrCreate()
+    val orders = spark.sql("select * from hive.orders")
+    val orderCnt = orders.groupBy("user_id").count().limit(10)
+    orderCnt.show()
+  }
 }
