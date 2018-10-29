@@ -53,4 +53,12 @@ object Lesson_5 {
     val orderCnt = orders.groupBy("user_id").count().limit(10)
     orderCnt.show()
   }
+  // 每个用户购买的商品种类
+  def prodSet(): Unit = {
+    val spark = SparkSession.builder().appName("Calculate Orders User Have Bought").master("local[2]").getOrCreate()
+    val orders = spark.sql("select * from hive.orders")
+    val priors = spark.sql("select * from hive.order_products_prior")
+    val prodSet = orders.join(priors, "order_id").select("user_id", "product_id").limit(10)
+    prodSet.show()
+  }
 }
