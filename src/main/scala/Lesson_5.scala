@@ -73,8 +73,11 @@ object Lesson_5 {
     val orders = spark.sql("select * from hive.orders")
     val priors = spark.sql("select * from hive.order_products_prior")
     val prodSet = orders.join(priors, "order_id").select("user_id", "product_id")
+    import priors.sparkSession.implicits._
     val cntAndUni = prodSet.rdd.map(x=>(x(0).toString, x(1).toString)).groupByKey().mapValues{record =>
-      val rs = record.toSet(record.size, record.mkString(","))
-    }.toDF()
+      val rs = record.toSet // 去重
+      (rs.size, rs.mkString(","))
+    }.toDF("user_id", "tuple")
+      .selectExpr("user_id", "tuple._1 as prod_dist_cnt","tuple._2 as prod_records")
   }
 }
