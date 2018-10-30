@@ -85,7 +85,7 @@ object Lesson_5 {
     val spark = SparkSession.builder().appName("Average Products Number In User's Order").master("local[2]").getOrCreate()
     val orders = spark.sql("select * from hive.orders")
     val priors = spark.sql("select * from hive.order_products_prior")
-    var ordProCnt = priors.groupBy("order_id").count()
+    val ordProCnt = priors.groupBy("order_id").count()
     val userPerOrdProdCnt = orders.join(ordProCnt, "order_id")
       .groupBy("user_id").avg("count").withColumnRenamed("avg(count)", "u_avg_ord_prods").limit(10)
     userPerOrdProdCnt.show()
