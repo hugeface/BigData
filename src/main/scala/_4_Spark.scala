@@ -1,7 +1,7 @@
 import scala.util.matching.Regex
 import scala.io.Source
 
-object Lesson_4 {
+object _4_Spark {
   // 生成 case when 文本
   def caseWhenText() : Unit = {
     val a : Array[Int] = Array(1, 2, 3, 4, 5, 6)

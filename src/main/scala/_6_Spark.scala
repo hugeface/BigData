@@ -1,4 +1,4 @@
-object Lesson_6 {
+object _6_Spark {
   /**
     * user and product Feature: cross feature 交叉特征
     * 1. 统计user和对应product在多少个订单中出现（distinct order_id）

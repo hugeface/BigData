@@ -1,7 +1,7 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-object Lesson_5 {
+object _5_Spark {
   /**
     * Product 统计、特征
     */
