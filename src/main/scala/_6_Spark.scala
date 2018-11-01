@@ -1,7 +1,7 @@
 import org.apache.spark.sql.{DataFrame, SparkSession}
+
 object _6_Spark {
   val spark = SparkSession.builder().appName("Cross Feature").master("local[2]").getOrCreate()
-//  val prior = spark.sql("select * from hive.order_products_prior")
   val prior = spark.sql("select * from hive.order_products_prior")
   val orders = spark.sql("select * from hive.orders")
   /**
@@ -37,8 +37,8 @@ object _6_Spark {
     val tinyTable = prior.selectExpr("order_id", "product_id").join(orders.selectExpr("order_id", "user_id"), "order_id")
     val totalPrdCnt = tinyTable.groupBy("user_id").count().withColumnRenamed("count", "prod_cnt")
     val prdCnt = tinyTable.groupBy("user_id", "product_id").count().distinct().withColumnRenamed("count", "per_cnt_cnt")
-    import prdCnt.sparkSession.implicits
-    val result = prdCnt.join(totalPrdCnt, "user_id").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble / x(3).toString.toDouble))
-    totalPrdCnt.show()
+    import prdCnt.sparkSession.implicits._
+    val result = prdCnt.join(totalPrdCnt, "user_id").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble / x(3).toString.toDouble)).toDF("user_id", "product_id", "prod_rate").limit(10)
+    result.show()
   }
 }
