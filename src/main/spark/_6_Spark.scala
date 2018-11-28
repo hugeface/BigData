@@ -29,7 +29,7 @@ object _6_Spark {
   }
   // 用户每个订单中最后一个被添加的商品
   def lastOrder(prior:DataFrame, orders:DataFrame): Unit = {
-    val result = orders.join(prior, "order_id").selectExpr("user_id", "order_id", "product_id", "add_to_cast_order as add_order").groupBy("user_id").agg()
+    val result = orders.join(prior, "order_id").selectExpr("user_id", "order_id", "product_id", "add_to_cast_order as add_order").groupBy("user_id")
   }
   // 用户对应product在所有这个用户购买产品量中的占比
   def prodRate(prior:DataFrame, orders:DataFrame): Unit = {

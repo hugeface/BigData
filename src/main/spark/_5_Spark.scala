@@ -31,6 +31,7 @@ object _5_Spark {
     val prdBuyCnt = df.select("order_id", "product_id").groupBy("product_id").count()
     val rebuyCnt = df.select("product_id", "reordered").where("reordered > 0" ).groupBy("product_id").agg("reordered" -> "sum").toDF("product_id", "reorder_cnt")
     val joinTable = prdBuyCnt.join(rebuyCnt, "product_id")
+    import joinTable.sparkSession.implicits._
     val reorderRatio = joinTable.map(x => (x(0).toString, (x(2).toString.toDouble / x(1).toString.toDouble).formatted("%.2f"))).toDF("product_id", "reorder_ratio").limit(10)
     reorderRatio.show()
   }
