@@ -18,7 +18,7 @@ object ReceiveFromKafka {
     Logger.getLogger("org.apache.spark").setLevel(Level.ERROR)
 
     // 1.获取参数/指定6个参数
-    val Array(group_id, topic, exectime, dt) = Array("brokers", "badou", "30", "20181206")
+    val Array(group_id, topic, exectime, dt) = Array("group_test", "badou", "3", "20181206")
     val zkHostIP = Array("10", "11", "12").map("192.168.136." + _)
     val ZK_QUORUM = zkHostIP.map(_+":2181").mkString(",")
     val numPartitions = 1
@@ -45,19 +45,19 @@ object ReceiveFromKafka {
         .enableHiveSupport().getOrCreate()
       import spark.implicits._
 
-      rdd.map(x => {
+      rdd.map{x =>
         val mess = JSON.parseObject(x, classOf[Orders])
         Order(mess.order_id, mess.user_id)
-      }).toDF()
+      }.toDF()
     }
 
     // 5.DStream核心处理逻辑，对DStream中每个RDD做"RDD转DF"，然后通过DF结构将数据最佳到分区表中
-    val log = mesR.foreachRDD(rdd => {
+    val log = mesR.foreachRDD{rdd =>
       val df = rdd2DF(rdd)
       df.withColumn("dt", lit(dt.toString))
         .write.mode(SaveMode.Append)
-        .insertInto("streaming.order_partition")
-    })
+        .insertInto("badou.order_partition")
+    }
 
     ssc.start()
     ssc.awaitTermination()
