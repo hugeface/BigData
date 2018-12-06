@@ -1,6 +1,7 @@
+package main.streaming
+
 import org.apache.spark._
 import org.apache.spark.streaming._
-import org.apache.spark.streaming.StreamingContext._
 
 object SimpleTest {
   def main(args: Array[String]): Unit = {

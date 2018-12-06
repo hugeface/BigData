@@ -1,3 +1,5 @@
+package main.streaming
+
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark._
 import org.apache.spark.streaming._
