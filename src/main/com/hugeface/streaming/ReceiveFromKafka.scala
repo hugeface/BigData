@@ -18,12 +18,13 @@ object ReceiveFromKafka {
     Logger.getLogger("org.apache.spark").setLevel(Level.ERROR)
 
     // 1.获取参数/指定6个参数
-    val Array(group_id, topic, exectime, dt) = Array("group_test", "badou", "3", "20181206")
+    val Array(group_id, topic, exectime, dt) = Array("group_test", "badou", "3", "")
     val zkHostIP = Array("10", "11", "12").map("192.168.136." + _)
     val ZK_QUORUM = zkHostIP.map(_+":2181").mkString(",")
     val numPartitions = 1
 
     // 2.创建streamContext
+//    val conf = new SparkConf().setAppName("Test").setMaster("local[2]")
     val conf = new SparkConf()
     val ssc = new StreamingContext(conf, Seconds(exectime.toInt))
 
@@ -35,29 +36,31 @@ object ReceiveFromKafka {
     // createStream return DStream of (Kafka message key, Kafka message value)
     val mesR = KafkaUtils.createStream(ssc, ZK_QUORUM, group_id, topicMap).map(_._2)
 
-    // 4.生成一个RDD转DF的方法
-    def rdd2DF(rdd: RDD[String]):DataFrame = {
-      val spark = SparkSession
-        .builder()
-        .appName("Streaming From Kafka")
-        .config("hive.exec.dynamic.partition", "true")
-        .config("hive.exec.dynamic.partition.mode", "nonstrict")
-        .enableHiveSupport().getOrCreate()
-      import spark.implicits._
+    mesR.map((_, 1L)).reduceByKey(_ + _).print
 
-      rdd.map{x =>
-        val mess = JSON.parseObject(x, classOf[Orders])
-        Order(mess.order_id, mess.user_id)
-      }.toDF()
-    }
-
-    // 5.DStream核心处理逻辑，对DStream中每个RDD做"RDD转DF"，然后通过DF结构将数据最佳到分区表中
-    val log = mesR.foreachRDD{rdd =>
-      val df = rdd2DF(rdd)
-      df.withColumn("dt", lit(dt.toString))
-        .write.mode(SaveMode.Append)
-        .insertInto("badou.order_partition")
-    }
+//    // 4.生成一个RDD转DF的方法
+//    def rdd2DF(rdd: RDD[String]):DataFrame = {
+//      val spark = SparkSession
+//        .builder()
+//        .appName("Streaming From Kafka")
+//        .config("hive.exec.dynamic.partition", "true")
+//        .config("hive.exec.dynamic.partition.mode", "nonstrict")
+//        .enableHiveSupport().getOrCreate()
+//      import spark.implicits._
+//
+//      rdd.map{x =>
+//        val mess = JSON.parseObject(x, classOf[Orders])
+//        Order(mess.order_id, mess.user_id)
+//      }.toDF()
+//    }
+//
+//    // 5.DStream核心处理逻辑，对DStream中每个RDD做"RDD转DF"，然后通过DF结构将数据最佳到分区表中
+//    val log = mesR.foreachRDD{rdd =>
+//      val df = rdd2DF(rdd)
+//      df.withColumn("dt", lit(dt.toString))
+//        .write.mode(SaveMode.Append)
+//        .insertInto("badou.order_partition")
+//    }
 
     ssc.start()
     ssc.awaitTermination()
