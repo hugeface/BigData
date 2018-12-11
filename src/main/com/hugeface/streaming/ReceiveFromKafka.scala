@@ -1,4 +1,4 @@
-package main.streaming
+package com.hugeface.streaming
 
 import com.alibaba.fastjson.JSON
 import org.apache.log4j.{Level, Logger}

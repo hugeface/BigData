@@ -1,4 +1,4 @@
-package main.streaming
+package main.com.hugeface.streaming
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark._

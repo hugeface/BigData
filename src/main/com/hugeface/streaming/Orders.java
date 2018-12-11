@@ -1,4 +1,4 @@
-package main.streaming;
+package com.hugeface.streaming;
 
 public class Orders {
     public String order_id;
