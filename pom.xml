@@ -17,6 +17,9 @@
         <scala.version>2.11</scala.version>
     </properties>
 
+    <build>
+        <sourceDirectory>${project.basedir}/src/main</sourceDirectory>
+    </build>
 
     <dependencies>
         <dependency>
