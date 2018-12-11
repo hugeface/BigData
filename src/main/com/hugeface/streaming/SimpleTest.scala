@@ -1,4 +1,4 @@
-package main.com.hugeface.streaming
+package com.hugeface.streaming
 
 import org.apache.spark._
 import org.apache.spark.streaming._

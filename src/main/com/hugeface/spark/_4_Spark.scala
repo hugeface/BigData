@@ -1,3 +1,5 @@
+package com.hugeface.spark
+
 import scala.util.matching.Regex
 import scala.io.Source
 

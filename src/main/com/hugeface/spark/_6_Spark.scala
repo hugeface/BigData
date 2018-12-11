@@ -1,3 +1,5 @@
+package com.hugeface.spark
+
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object _6_Spark {
