@@ -18,7 +18,7 @@ object ReceiveFromKafka {
     Logger.getLogger("org.apache.spark").setLevel(Level.ERROR)
 
     // 1.获取参数/指定6个参数
-    val Array(group_id, topic, exectime, dt) = Array("group_test", "badou", "3", "")
+    val Array(group_id, topic, exectime, dt) = Array("group_test", "badou", "3", "20181210")
     val zkHostIP = Array("10", "11", "12").map("192.168.136." + _)
     val ZK_QUORUM = zkHostIP.map(_+":2181").mkString(",")
     val numPartitions = 1
